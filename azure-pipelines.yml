@@ -10,6 +10,19 @@ variables:
 steps:
 - task: CopyFiles@2
   inputs:
+    SourceFolder: '$(Build.SourcesDirectory)'
+    Contents: 'screenshot.png'
+    TargetFolder: '$(System.DefaultWorkingDirectory)'
+
+- task: PublishPipelineArtifact@1
+  displayName: 'Publish LivingDocfile'
+  inputs:
+    pathToPublish: '$(System.DefaultWorkingDirectory)'
+    artifactName: 'TestResultScreenshot'
+    publishLocation: 'pipeline'   
+        
+- task: CopyFiles@2
+  inputs:
     contents: '$(screenshotPath)'
     targetFolder: '$(Build.ArtifactStagingDirectory)'
 
