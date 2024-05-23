@@ -23,7 +23,7 @@ steps:
         
 - task: CopyFiles@2
   inputs:
-    contents: '$(Build.SourcesDirectory)/**/*.png'
+    contents: '**/*.png'
     targetFolder: '$(Build.ArtifactStagingDirectory)/FailedTestScreenshots'
 
 - task: PublishBuildArtifacts@1
