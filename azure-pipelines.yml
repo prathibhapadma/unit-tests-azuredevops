@@ -17,7 +17,6 @@ steps:
   inputs:
     pathToPublish: '$(Build.ArtifactStagingDirectory)'
     artifactName: 'FailedTestScreenshots'
-  condition: failed()
   displayName: 'Publish failed test screenshots'
   
 # pool:
