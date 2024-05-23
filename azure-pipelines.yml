@@ -16,7 +16,7 @@ steps:
 - task: PublishBuildArtifacts@1
   inputs:
     pathToPublish: '$(Build.ArtifactStagingDirectory)/FailedTest'
-    artifactName: 'FailedTest'
+    artifactName: 'drop'
   displayName: 'Publish failed test screenshots'
 - task: CopyFiles@2
   inputs:
@@ -26,7 +26,7 @@ steps:
 - task: PublishBuildArtifacts@1
   inputs:
     pathToPublish: '$(Build.ArtifactStagingDirectory)/Screenshots'
-    artifactName: 'Screenshots'
+    artifactName: 'drop'
   displayName: 'Publish failed test screenshots'  
         
 - task: CopyFiles@2
@@ -37,7 +37,7 @@ steps:
 - task: PublishBuildArtifacts@1
   inputs:
     pathToPublish: '$(Build.ArtifactStagingDirectory)/FailedTestScreenshots'
-    artifactName: 'FailedTestScreenshots'
+    artifactName: 'drop'
   displayName: 'Publish failed test screenshots'
   
 # pool:
