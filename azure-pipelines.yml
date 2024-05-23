@@ -1,40 +1,56 @@
-
 pool:
-  vmImage: ubuntu-latest
+  vmImage: 'windows-latest'
 
-trigger: none
-pr: none 
+trigger:
+  branches:
+    include:
+      - main
 
 stages:
-
-  - stage:
-    displayName: Build .NET application
+  - stage: Build
     jobs:
-      - job:
-        displayName: build job
+      - job: Build
         steps:
           - task: UseDotNet@2
-            displayName: Use .NET6 to build
             inputs:
+              packageType: 'sdk'
               version: '6.0.x'
-              includePreviewVersions: true
+
+          - task: NuGetToolInstaller@1
+
+          - task: NuGetCommand@2
+            inputs:
+              restoreSolution: 'AzureDevOpsUnitTestsExample.sln'
+
           - task: DotNetCoreCLI@2
-            displayName: Building Visual studio solution
             inputs:
               command: 'build'
               projects: '**/*.csproj'
-              arguments: '--configuration debug'
+              arguments: '--configuration Debug'
 
-  - stage: 
-    displayName: Run unit tests
+  - stage: Test
     jobs:
-      - job:
-        displayName: unit tests job
+      - job: Test
         steps:
           - task: DotNetCoreCLI@2
-            displayName: Run Visual studio tests
             inputs:
-              command: test
+              command: 'test'
               projects: '**/*Test*/*.csproj'
-              arguments: '--configuration debug'
-          
+              arguments: '--configuration Debug --logger:trx'
+
+          - task: PublishTestResults@2
+            inputs:
+              testResultsFormat: 'VSTest'
+              testResultsFiles: '**/TestResults/*.trx'
+              searchFolder: '$(System.DefaultWorkingDirectory)'
+
+          - task: CopyFiles@2
+            inputs:
+              SourceFolder: '$(System.DefaultWorkingDirectory)/TestProject1/TestResults'
+              Contents: '**/Screenshots/*'
+              TargetFolder: '$(Build.ArtifactStagingDirectory)/Screenshots'
+
+          - task: PublishBuildArtifacts@1
+            inputs:
+              pathtoPublish: '$(Build.ArtifactStagingDirectory)/Screenshots'
+              artifactName: 'Screenshots'
