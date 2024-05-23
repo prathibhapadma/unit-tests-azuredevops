@@ -23,12 +23,12 @@ steps:
         
 - task: CopyFiles@2
   inputs:
-    contents: '$(Build.SourcesDirectory)/*.png'
+    contents: '$(Build.SourcesDirectory)/**/*.png'
     targetFolder: '$(Build.ArtifactStagingDirectory)/FailedTestScreenshots'
 
 - task: PublishBuildArtifacts@1
   inputs:
-    pathToPublish: '$(Build.ArtifactStagingDirectory)/FailedTestScreenshots'
+    pathToPublish: '$(Build.ArtifactStagingDirectory)'
     artifactName: 'FailedTestScreenshots'
   displayName: 'Publish failed test screenshots'
   
