@@ -1,54 +1,76 @@
+trigger:
+- main
+
 pool:
-  vmImage: 'windows-latest'
+  vmImage: 'ubuntu-latest'
 
-trigger: none
+variables:
+  screenshotPath: '$(Build.SourcesDirectory)/screenshot.png' # Update this to the path where the screenshot is saved
 
-stages:
-  - stage: Build
-    jobs:
-      - job: Build
-        steps:
-          - task: UseDotNet@2
-            inputs:
-              packageType: 'sdk'
-              version: '6.0.x'
+steps:
+- task: CopyFiles@2
+  inputs:
+    contents: '$(screenshotPath)'
+    targetFolder: '$(Build.ArtifactStagingDirectory)'
 
-          - task: NuGetToolInstaller@1
+- task: PublishBuildArtifacts@1
+  inputs:
+    pathToPublish: '$(Build.ArtifactStagingDirectory)'
+    artifactName: 'FailedTestScreenshots'
+  condition: failed()
+  displayName: 'Publish failed test screenshots'
+  
+# pool:
+#   vmImage: 'windows-latest'
 
-          - task: NuGetCommand@2
-            inputs:
-              restoreSolution: 'AzureDevOpsUnitTestsExample.sln'
+# trigger: none
 
-          - task: DotNetCoreCLI@2
-            inputs:
-              command: 'build'
-              projects: '**/*.csproj'
-              arguments: '--configuration Debug'
+# stages:
+#   - stage: Build
+#     jobs:
+#       - job: Build
+#         steps:
+#           - task: UseDotNet@2
+#             inputs:
+#               packageType: 'sdk'
+#               version: '6.0.x'
 
-  - stage: Test
-    jobs:
-      - job: Test
-        steps:
-          - task: DotNetCoreCLI@2
-            continueOnError: true
-            inputs:
-              command: 'test'
-              projects: '**/*Test*/*.csproj'
-              arguments: '--configuration Debug --logger:trx'
+#           - task: NuGetToolInstaller@1
 
-          - task: PublishTestResults@2
-            inputs:
-              testResultsFormat: 'VSTest'
-              testResultsFiles: '**/TestResults/*.trx'
-              searchFolder: '$(System.DefaultWorkingDirectory)'
+#           - task: NuGetCommand@2
+#             inputs:
+#               restoreSolution: 'AzureDevOpsUnitTestsExample.sln'
 
-          - task: CopyFiles@2
-            inputs:
-              SourceFolder: '$(System.DefaultWorkingDirectory)/TestProject1/TestResults'
-              Contents: '**/Screenshots/*'
-              TargetFolder: '$(Build.ArtifactStagingDirectory)/Screenshots'
+#           - task: DotNetCoreCLI@2
+#             inputs:
+#               command: 'build'
+#               projects: '**/*.csproj'
+#               arguments: '--configuration Debug'
 
-          - task: PublishBuildArtifacts@1
-            inputs:
-              pathtoPublish: '$(Build.ArtifactStagingDirectory)/Screenshots'
-              artifactName: 'Screenshots'
+#   - stage: Test
+#     jobs:
+#       - job: Test
+#         steps:
+#           - task: DotNetCoreCLI@2
+#             continueOnError: true
+#             inputs:
+#               command: 'test'
+#               projects: '**/*Test*/*.csproj'
+#               arguments: '--configuration Debug --logger:trx'
+
+#           - task: PublishTestResults@2
+#             inputs:
+#               testResultsFormat: 'VSTest'
+#               testResultsFiles: '**/TestResults/*.trx'
+#               searchFolder: '$(System.DefaultWorkingDirectory)'
+
+#           - task: CopyFiles@2
+#             inputs:
+#               SourceFolder: '$(System.DefaultWorkingDirectory)/TestProject1/TestResults'
+#               Contents: '**/Screenshots/*'
+#               TargetFolder: '$(Build.ArtifactStagingDirectory)/Screenshots'
+
+#           - task: PublishBuildArtifacts@1
+#             inputs:
+#               pathtoPublish: '$(Build.ArtifactStagingDirectory)/Screenshots'
+#               artifactName: 'Screenshots'
