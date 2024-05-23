@@ -8,27 +8,27 @@ variables:
   screenshotPath: '$(Build.SourcesDirectory)/screenshot.png' # Update this to the path where the screenshot is saved
 
 steps:
-- task: CopyFiles@2
-  inputs:
-    SourceFolder: '$(Build.SourcesDirectory)'
-    Contents: 'screenshot.png'
-    TargetFolder: '$(System.DefaultWorkingDirectory)'
+# - task: CopyFiles@2
+#   inputs:
+#     SourceFolder: '$(Build.SourcesDirectory)'
+#     Contents: 'screenshot.png'
+#     TargetFolder: '$(System.DefaultWorkingDirectory)'
 
-- task: PublishPipelineArtifact@1
-  displayName: 'Publish LivingDocfile'
-  inputs:
-    pathToPublish: '$(System.DefaultWorkingDirectory)'
-    artifactName: 'TestResultScreenshot'
-    publishLocation: 'pipeline'   
+# - task: PublishPipelineArtifact@1
+#   displayName: 'Publish LivingDocfile'
+#   inputs:
+#     pathToPublish: '$(System.DefaultWorkingDirectory)'
+#     artifactName: 'TestResultScreenshot'
+#     publishLocation: 'pipeline'   
         
 - task: CopyFiles@2
   inputs:
     contents: '$(Build.SourcesDirectory)/*.png'
-    targetFolder: '$(Build.ArtifactStagingDirectory)'
+    targetFolder: '$(Build.ArtifactStagingDirectory)/FailedTestScreenshots'
 
 - task: PublishBuildArtifacts@1
   inputs:
-    pathToPublish: '$(Build.ArtifactStagingDirectory)'
+    pathToPublish: '$(Build.ArtifactStagingDirectory)/FailedTestScreenshots'
     artifactName: 'FailedTestScreenshots'
   displayName: 'Publish failed test screenshots'
   
